@@ -4,7 +4,7 @@
 
 A DSH host bundle plugin that builds a two-level (category → skill) recall index over every local `SKILL.md` and routes a natural-language intent to the best-matching skills — read-only against the source trees, zero third-party runtime deps.
 
-> 本文档是 [skill-indexer PRD](https://github.com/NattoCB/dsh-skill-indexer) 的 TypeScript 重写版（PRD 原为 Python 零依赖 CLI；按用户要求全量重写为 DSH Cordis 插件）。
+> 本文档是 **skill-indexer PRD（v1.1，2026-08-19）** 的 TypeScript 重写版：PRD 原为 Python 3 零依赖 CLI，按用户要求全量重写为 DSH Cordis 插件。源 PRD 为本地规格文档，见文末「参考」。
 
 ---
 
@@ -170,3 +170,8 @@ npm run demo      # 扫描默认 roots 并路由几条示例意图（可传自�
 ```
 
 fixtures 位于 `test/fixtures/`（workbuddy + dsh 两个 root，含跨 root 同名 skill 与 block scalar / 嵌套 metadata 边界）。
+
+## 参考 / Reference
+
+- **skill-indexer PRD v1.1**（2026-08-19）——本插件的源规格文档，含两级索引、三态回退、哈希增量与验收标准（A1–A5 / B1–B5 / C1–C4）。为本地文档，未公开发布。
+- **文献调研**（PRD §1.1 提及，仅作设计决策依据，非依赖）：Graph-of-Skills、SRA / Progressive Disclosure、SkillReason、SkillFlow、Hi-RAG。本实现只取其中的轻量思想（两级分层 + 三态回退），用零依赖规则落地，未照搬上述论文的方法（embedding / 训练 / 图构建均明确不做）。
