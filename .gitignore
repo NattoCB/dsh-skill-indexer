@@ -11,3 +11,6 @@ data/
 
 # ── dev-installed host packages stay vendored, not tracked ──
 node_modules/
+
+# ── coverage / test artifacts ──
+coverage/

@@ -2,11 +2,23 @@
 	"name": "dsh-skill-indexer",
 	"version": "0.1.0",
 	"description": "DSH host bundle plugin: builds a two-level (category + skill) recall index over all local SKILL.md files and routes a natural-language intent to the best-matching skills, with three-state (hit / low-confidence / miss) fallback.",
+	"keywords": [
+		"dsh",
+		"dsh-plugin",
+		"deepseek-harness",
+		"skill",
+		"skill-indexer",
+		"skill-discovery",
+		"skill-routing"
+	],
 	"repository": {
 		"type": "git",
 		"url": "git+https://github.com/NattoCB/dsh-skill-indexer.git"
 	},
 	"type": "module",
+	"engines": {
+		"node": ">=18"
+	},
 	"main": "src/index.js",
 	"exports": {
 		".": "./src/index.js",
