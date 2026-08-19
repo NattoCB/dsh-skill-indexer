@@ -1,10 +1,16 @@
 # dsh-skill-indexer
 
-把本机所有 `SKILL.md` 统一建成两级（大类 → 技能）召回索引，让任意 agent 用一句话意图就能召回到正确技能。纯本地、只读源目录、宿主无关（WorkBuddy / DSH 双宿主技能树都能扫）。
+> **让 agent 用一句话找到对的技能。** 把本机所有 `SKILL.md` 统一建成两级（大类 → 技能）召回索引，让任意 agent 用一句话意图就能召回到正确技能。纯本地、只读源目录、宿主无关（WorkBuddy / DSH 双宿主技能树都能扫）。
 
 A DSH host bundle plugin that builds a two-level (category → skill) recall index over every local `SKILL.md` and routes a natural-language intent to the best-matching skills — read-only against the source trees, zero third-party runtime deps.
 
 > 本文档是 **skill-indexer PRD（v1.1，2026-08-19）** 的 TypeScript 重写版：PRD 原为 Python 3 零依赖 CLI，按用户要求全量重写为 DSH Cordis 插件。源 PRD 为本地规格文档，见文末「参考」。
+
+## 为什么需要它
+
+技能越装越多，「我记得有这样一个 skill」就越来越难。翻目录、猜名字、逐个打开
+SKILL.md —— 都是纯浪费。这个插件把技能库变成可检索的索引：agent 输入一句意图，
+命中大类 → 类内排序 → 低置信回退，一步到位；全程离线、只读、确定性。
 
 ---
 
@@ -175,3 +181,7 @@ fixtures 位于 `test/fixtures/`（workbuddy + dsh 两个 root，含跨 root 同
 
 - **skill-indexer PRD v1.1**（2026-08-19）——本插件的源规格文档，含两级索引、三态回退、哈希增量与验收标准（A1–A5 / B1–B5 / C1–C4）。为本地文档，未公开发布。
 - **文献调研**（PRD §1.1 提及，仅作设计决策依据，非依赖）：Graph-of-Skills、SRA / Progressive Disclosure、SkillReason、SkillFlow、Hi-RAG。本实现只取其中的轻量思想（两级分层 + 三态回退），用零依赖规则落地，未照搬上述论文的方法（embedding / 训练 / 图构建均明确不做）。
+
+---
+
+**试一下:** 装好后对 agent 说 `skill_index(query="把这个PDF转成markdown")`，或直接跑 `/skill-index query 把这周的ETF拉出来画个图`。索引或召回不准?提 issue 或按「已知限制」里的方向改进。
