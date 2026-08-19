@@ -68,3 +68,15 @@ test('routing is deterministic for identical input', () => {
 	const b = JSON.stringify(routeIntent(index, '把这周的ETF拉出来画个图'));
 	assert.equal(a, b);
 });
+
+test('misses when the top category score is below theta2', () => {
+	const r = routeIntent(index, '把这周的ETF拉出来画个图', { theta1: 10, theta2: 10 });
+	assert.equal(r.state, 'miss');
+	assert.deepEqual(r.hits, []);
+});
+
+test('honors a custom topk for hit ranking', () => {
+	const r = routeIntent(index, '把这周的ETF拉出来画个图', { topk: 2 });
+	assert.equal(r.state, 'hit');
+	assert.ok(r.hits.length <= 2);
+});
