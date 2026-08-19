@@ -86,7 +86,44 @@ src/
   output.js    # 注入文本模板渲染
   overrides.js # categories.yaml 解析
 test/          # node:test 单测 + fixtures
+scripts/       # demo_query.mjs 一键演示
 ```
+
+## 数据模型（`skills-index.json`）
+
+索引是 UTF-8、无 ASCII 转义、2 空格缩进的 JSON（`generated_at` 为 ISO 时间戳）：
+
+```json
+{
+  "version": 1,
+  "generated_at": "2026-08-19T00:00:00.000Z",
+  "roots": [{ "path": "/…/skills", "type": "workbuddy", "count": 77 }],
+  "categories": [
+    { "id": "finance", "name": "金融数据", "desc": "…", "keywords": ["etf", "…"], "skills": ["etf-filter"] }
+  ],
+  "skills": [
+    {
+      "id": "etf-filter",
+      "root": "/…/skills",
+      "path": "/…/skills/etf-filter/SKILL.md",
+      "name": "etf-filter",
+      "description": "…",
+      "one_liner": "…",
+      "triggers": ["…"],
+      "keywords": ["…"],
+      "categories": ["finance"],
+      "deps": [],
+      "hash": "sha256…",
+      "usage_count": 0,
+      "last_used": null
+    }
+  ],
+  "warnings": []
+}
+```
+
+- `id` 规则：唯一名 → `id = name`；跨 root 重名 → `id = name@type`（如 `pdf-to-markdown@dsh`）。`categories[].skills` 与 `skills[].id` 引用闭合。
+- 增量：`scan` 按 `hash` 对比，未变技能保留 `usage_count`/`last_used`；无变更时命令提示 "(no changes)"。
 
 ## 验收结果
 
@@ -129,6 +166,7 @@ test/          # node:test 单测 + fixtures
 
 ```bash
 npm test          # node --test "test/**/*.test.js"
+npm run demo      # 扫描默认 roots 并路由几条示例意图（可传自定义查询）
 ```
 
 fixtures 位于 `test/fixtures/`（workbuddy + dsh 两个 root，含跨 root 同名 skill 与 block scalar / 嵌套 metadata 边界）。
