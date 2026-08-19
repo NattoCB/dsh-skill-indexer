@@ -4,6 +4,8 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
+import fs from 'node:fs';
+import os from 'node:os';
 import { parseSkillDocument, scanRoot, unquote } from '../src/scanner.js';
 
 const HERE = path.dirname(fileURLToPath(import.meta.url));
@@ -72,4 +74,28 @@ test('scanRoot warns on a missing root', () => {
 	const res = scanRoot(path.join(WB, 'does-not-exist'), 'x');
 	assert.equal(res.exists, false);
 	assert.equal(res.warnings[0].reason, 'root_missing');
+});
+
+test('parseSkillDocument folds a > block scalar into a single line', () => {
+	const text = ['---', 'name: x', 'description: >', '  line one', '  line two', '---', 'body'].join('\n');
+	const { data } = parseSkillDocument(text);
+	assert.equal(data.description, 'line one line two');
+});
+
+test('scanRoot skips dirs without SKILL.md and ignores loose files', () => {
+	const root = fs.mkdtempSync(path.join(os.tmpdir(), 'skidx-'));
+	try {
+		fs.mkdirSync(path.join(root, 'good-skill'));
+		fs.writeFileSync(path.join(root, 'good-skill', 'SKILL.md'), '---\nname: good-skill\ndescription: A skill.\n---\nbody\n');
+		fs.mkdirSync(path.join(root, 'empty-dir'));
+		fs.writeFileSync(path.join(root, 'loose.json'), '{}');
+
+		const res = scanRoot(root, 'custom');
+		assert.equal(res.count, 1);
+		assert.equal(res.skills[0].name, 'good-skill');
+		assert.ok(res.warnings.some((w) => w.reason === 'missing_skill_md' && w.path.endsWith('empty-dir')));
+		assert.ok(!res.warnings.some((w) => String(w.path).endsWith('loose.json')));
+	} finally {
+		fs.rmSync(root, { recursive: true, force: true });
+	}
 });
