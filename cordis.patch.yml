@@ -1,0 +1,23 @@
+# DSH bundle patch for the skill-indexer plugin.
+#
+# Mounts one host-side service that (1) scans the local skill directories
+# (~/.workbuddy/skills and ~/.dsh/skills by default), builds a two-level
+# category+skill recall index, and (2) exposes the `skill_index` model-facing
+# tool plus the `/skill-index` slash command for intent -> skill routing.
+#
+# The plugin is read-only against the skill source directories: every artifact
+# (the JSON index) is written to `dataDir` only. Roots, scoring thresholds and
+# the optional categories.yaml override are configurable below.
+
+- insert:
+    - id: skill-indexer
+      name: 'dsh-skill-indexer'
+      inject:
+        - tools
+        - commands
+      config:
+        roots: []
+        theta1: 0.35
+        theta2: 0.12
+        dataDir: ''
+        categoriesYaml: ''

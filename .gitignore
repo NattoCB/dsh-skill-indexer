@@ -1,0 +1,13 @@
+# ── generated index / runtime artifacts ──
+data/
+*.log
+*.tmp
+
+# ── agent / development process artifacts ──
+*.bak-*
+*.corrupt-*
+*.quarantined-*
+.DS_Store
+
+# ── dev-installed host packages stay vendored, not tracked ──
+node_modules/
