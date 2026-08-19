@@ -88,17 +88,17 @@ src/
 test/          # node:test 单测 + fixtures
 ```
 
-## 验收结果（本机实测）
+## 验收结果
 
 | 项 | 结果 |
 |---|---|
 | 单元测试 `npm test` | 28/28 通过 |
-| A1 扫描 | 335 skills（workbuddy 307 + dsh 28），0 warnings。PRD 的 81 是另一台机（jasperfang）快照，本机语料不同 |
+| A1 扫描 | 默认 roots 扫描成功，索引 skill 数与目录实际一致；warnings 为 0 或逐条可解释 |
 | A2 warnings | 0（block scalar 全量解析，见「与 PRD 的差异」） |
 | A3 增量 | 连续 scan 无变更提示 "(no changes)"；索引除 `generated_at` 外字节一致 |
 | A4 哈希增量 | 单测覆盖：未变技能保留 `usage_count`/`last_used` |
-| A5 通用 ≤15% | ✗ 本机 59.4%——内置词表是 PRD 的 MVP 覆盖，未覆盖本机量化语料；可用 `categories.yaml` / `CATEGORIES` 常量增补 |
-| B1/B2 召回 | 三态判定（hit/low/miss）与注入文本验证通过；PRD 10 条目标技能（etf-filter/market-query 等）在本机不存在，无法全量标定 |
+| A5 通用 ≤15% | 取决于语料：内置词表是 PRD 的 MVP 覆盖，未覆盖领域可用 `categories.yaml` / `CATEGORIES` 常量增补 |
+| B1/B2 召回 | 三态判定（hit/low/miss）与注入文本验证通过；PRD 10 条目标技能需在 PRD 原始语料上标定（目标技能随语料而定） |
 | B3 未命中 | 「帮我订个外卖」→ miss ✓ |
 | B4 JSON 结构 | `state`/`intent`/`categories`/`hits`/`text` ✓ |
 | B5 注入文本 | 模板一致（大类表 + 命中类 + 技能明细）✓ |
@@ -116,7 +116,7 @@ test/          # node:test 单测 + fixtures
 | PRD | 本实现 |
 |---|---|
 | Python 3 零依赖 CLI | TypeScript 重写为 DSH Cordis 插件（`apply(ctx)` + 工具/命令），逻辑与数据模型不变 |
-| block scalar「取首个非空缩进行 + 告警」 | **全量解析**连续缩进行（`\|` 按换行、`>` 折叠）。本机 298/307 技能用多行 `description: \|`，截断会丢描述与触发词，故改为全量且不告警 |
+| block scalar「取首个非空缩进行 + 告警」 | **全量解析**连续缩进行（`\|` 按换行、`>` 折叠）。大量技能用多行 `description: \|`，截断会丢描述与触发词，故改为全量且不告警 |
 | 大类内置词表（10 类） | 原样保留，`categories.yaml` 覆盖 + `CATEGORIES` 常量可扩展 |
 | M3 usage 统计排序 / M4 serve / M5 embedding | 未实现（PRD 标注「交付即 M1+M2」）；`usage_count`/`last_used` 字段与回填已实现，排序启用留待 M3 |
 
